@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>TODO List App</title>
+</head>
+<body>
+<h1>Login</h1>
+<input type="text" id="username" placeholder="Username">
+<input type="password" id="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<p id="loginStatus"></p>
+
+<h2>할 일 추가</h2>
+<input type="text" id="todoContent" placeholder="할 일 내용">
+<input type="date" id="dueDate">
+<button onclick="addTodo()">Add TODO</button>
+<p id="todoStatus"></p>
+
+<script>
+    function login() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        fetch('http://localhost:8080/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include', // 쿠키 저장
+            body: JSON.stringify({ username, password })
+        })
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById('loginStatus').innerText = data;
+            })
+            .catch(err => console.error(err));
+    }
+
+    function addTodo() {
+        const content = document.getElementById('todoContent').value;
+        const dueDate = document.getElementById('dueDate').value;
+
+        fetch('http://localhost:8080/todos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include', // 로그인 세션 유지
+            body: JSON.stringify({ content, dueDate })
+        })
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById('todoStatus').innerText = data;
+            })
+            .catch(err => console.error(err));
+    }
+</script>
+</body>
+</html>
